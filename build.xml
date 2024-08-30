@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="VulnerableApp-php" default="build" basedir=".">
+
+    <!-- Define properties -->
+    <property name="src.dir" value="src"/>
+    <property name="build.dir" value="build"/>
+    <property name="dist.dir" value="dist"/>
+    <property name="htdocs.dir" value="vulnerablehtaccess"/>
+    
+    <!-- Cleaning the previous build -->
+    <target name="clean">
+        <echo message="Cleaning build and dist directories..."/>
+        <delete dir="${build.dir}"/>
+        <delete dir="${dist.dir}"/>
+    </target>
+
+    <!-- Preparing the build directory -->
+    <target name="prepare" depends="clean">
+        <echo message="Creating build and dist directories..."/>
+        <mkdir dir="${build.dir}"/>
+        <mkdir dir="${dist.dir}"/>
+    </target>
+
+    <!-- Copying source files to the build directory -->
+    <target name="compile" depends="prepare">
+        <echo message="Copying source files..."/>
+        <copy todir="${build.dir}">
+            <fileset dir="${src.dir}"/>
+        </copy>
+    </target>
+
+    <!-- Creating a distribution package -->
+    <target name="dist" depends="compile">
+        <echo message="Creating distribution package..."/>
+        <mkdir dir="${dist.dir}/VulnerableApp-php"/>
+        <copy todir="${dist.dir}/VulnerableApp-php">
+            <fileset dir="${build.dir}"/>
+        </copy>
+        <tar destfile="${dist.dir}/VulnerableApp-php.tar.gz" basedir="${dist.dir}/VulnerableApp-php" compression="gzip"/>
+    </target>
+
+    <!-- Deploying to the web server -->
+    <target name="deploy" depends="dist">
+        <echo message="Deploying application to the web server..."/>
+        <copy todir="${htdocs.dir}">
+            <fileset dir="${dist.dir}/VulnerableApp-php"/>
+        </copy>
+    </target>
+
+    <!-- Full build process -->
+    <target name="build" depends="clean,prepare,compile,dist,deploy">
+        <echo message="Build and deployment completed successfully!"/>
+    </target>
+
+</project>
